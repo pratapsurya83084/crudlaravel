@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use GuzzleHttp\Middleware;
+// use Illuminate\Auth\Access\Gate;
+// use GuzzleHttp\Middleware;
 // use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Gate ;
 
-class PostController extends Controller  implements HasMiddleware
+class PostController extends Controller implements HasMiddleware
 {
 
 
@@ -16,7 +19,7 @@ public static  function middleware()
 {
     return[
 
-        new Middleware('auth:sanctum',except:['index','show'])
+new Middleware('auth:sanctum',except:['index','show'])
     
     ];
 }
@@ -60,6 +63,9 @@ return $post;
      */
     public function update(Request $request, Post $post)
     {
+    //    id wise update
+       Gate::authorize('modify',$post);
+       
         $fields =$request->validate([
             'title'=>'required|max:255',
             'body'=>'required',
