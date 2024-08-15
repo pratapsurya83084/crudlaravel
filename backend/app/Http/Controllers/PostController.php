@@ -3,12 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use GuzzleHttp\Middleware;
 // use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-
-class PostController extends Controller
+class PostController extends Controller  implements HasMiddleware
 {
+
+
+public static  function middleware()
+{
+    return[
+
+        new Middleware('auth:sanctum',except:['index','show'])
+    
+    ];
+}
+
+
+
     /**
      * Display a listing of the resource.
      */
@@ -27,7 +41,7 @@ class PostController extends Controller
             'body'=>'required',
 
         ]);
-  $post = Post::create($fields);
+  $post = $request->user()->posts()->create($fields);
 // return ['post'=>$post];
 return $post;
     }
